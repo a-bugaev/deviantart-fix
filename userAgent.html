@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Agent</title>
+  <style>
+    body { font: 16px/1.5 monospace; margin: 16px; }
+    pre { white-space: pre-wrap; word-break: break-word; }
+  </style>
+</head>
+
+<body>
+  <pre id="out"></pre>
+
+  <script>
+    function render() {
+      document.getElementById('out').textContent = [
+        'userAgent: ' + navigator.userAgent,
+        'viewport:  ' + innerWidth + '×' + innerHeight,
+        'screen:    ' + screen.width + '×' + screen.height,
+        'DPR:       ' + devicePixelRatio,
+        'physical:  ' + Math.round(screen.width * devicePixelRatio) + '×' + Math.round(screen.height * devicePixelRatio),
+      ].join('\n')
+    }
+
+    render()
+    window.addEventListener('resize', render)
+  </script>
+</body>
+
+</html>

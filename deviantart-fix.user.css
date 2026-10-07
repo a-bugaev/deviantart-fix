@@ -4,7 +4,7 @@
 @homepageURL  https://github.com/a-bugaev/deviantart-fix
 @supportURL   https://github.com/a-bugaev/deviantart-fix/issues
 @updateURL    https://raw.githubusercontent.com/a-bugaev/deviantart-fix/main/deviantart-fix.user.css
-@version      0.2.0
+@version      0.2.1
 @description  Показывает картинки в мобильной ленте DeviantArt целиком, без обрезки под одну высоту
 @license      MIT
 @preprocessor default
@@ -27,7 +27,27 @@
       width: 100% !important;
       height: auto !important;
       contain: none !important;
-      contain-intrinsic-size: none !important;
+      /* auto — браузер запоминает отрисованный размер строки (см. ниже) */
+      contain-intrinsic-size: auto 100vw auto 100vw !important;
+    }
+
+    /*
+     * Скачки ленты. Когда строка уходит за экран, <section> удаляется и
+     * строка возвращается к инлайн-высоте (361px), хотя с нашими правками
+     * она была выше. Контент над экраном схлопывается, лента прыгает, а
+     * Firefox после серии таких сдвигов отключает scroll anchoring.
+     *
+     * Поэтому опустевшая строка сохраняет свой последний отрисованный размер:
+     * content-visibility: hidden включает size containment, и высота берётся
+     * из запомненного contain-intrinsic-size: auto. Строки, которые ещё не
+     * отрисовывались, получают запасную высоту 100vw. Ограничиваемся лентами,
+     * где есть строки с одной карточкой, чтобы не трогать сетки галерей.
+     */
+    :has(> [data-testid="grid-row"]>div>section:only-child)>[data-testid="grid-row"]>div:not(:has(> section)) {
+      width: 100% !important;
+      height: auto !important;
+      content-visibility: hidden !important;
+      contain-intrinsic-size: auto 100vw auto 100vw !important;
     }
 
     [data-testid="grid-row"]>div>section:only-child,

@@ -1,0 +1,57 @@
+/* ==UserStyle==
+@name         DeviantArt mobile fix
+@namespace    github.com/a-bugaev/deviantart-fix
+@homepageURL  https://github.com/a-bugaev/deviantart-fix
+@supportURL   https://github.com/a-bugaev/deviantart-fix/issues
+@updateURL    https://raw.githubusercontent.com/a-bugaev/deviantart-fix/main/deviantart-fix.user.css
+@version      0.2.0
+@description  Показывает картинки в мобильной ленте DeviantArt целиком, без обрезки под одну высоту
+@license      MIT
+@preprocessor default
+==/UserStyle== */
+
+@-moz-document domain("deviantart.com") {
+
+  /*
+   * Лента («More like this» и т.п.) — это строки [data-testid="grid-row"],
+   * в каждой одна карточка <section>. Все размеры заданы инлайн-стилями
+   * (width: 450px; height: 361px), картинка обрезается через object-fit: cover.
+   *
+   * Строки вне экрана виртуализируются: <section> удаляется, а пустой div
+   * держит место с фиксированной высотой. Такие пустые строки не трогаем,
+   * правим только строки с ровно одной карточкой (многоколоночные сетки
+   * галерей тоже остаются как есть).
+   */
+  @media (max-width: 700px) {
+    [data-testid="grid-row"]>div:has(> section:only-child) {
+      width: 100% !important;
+      height: auto !important;
+      contain: none !important;
+      contain-intrinsic-size: none !important;
+    }
+
+    [data-testid="grid-row"]>div>section:only-child,
+    [data-testid="grid-row"]>div>section:only-child [style*="height"] {
+      width: 100% !important;
+      height: auto !important;
+    }
+
+    [data-testid="grid-row"]>div>section:only-child [data-testid="thumb"] img {
+      display: block !important;
+      width: 100% !important;
+      height: auto !important;
+      object-fit: contain !important;
+      object-position: 50% 50% !important;
+    }
+
+    /*
+     * Плашка «Use the DeviantArt Web App» внизу экрана. Классы у неё
+     * генерируемые, поэтому ищем по положению: <aside> перед порталами модалок
+     * в конце <body>. Плашка «Sell your art» в начале ленты тоже <aside>,
+     * но вложена глубже и сюда не попадает.
+     */
+    aside:has(~ .ReactModalPortal) {
+      display: none !important;
+    }
+  }
+}

@@ -2,3 +2,6 @@
 example-page-*.html
 screenshots
 more-like-this-page-source.html
+# Куки тестового аккаунта и результаты тестов (на скриншотах виден аккаунт)
+cookies.txt
+tests/out/
